@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-// Input Parameter
+// Input Parameter(inputParameterObject)
 $toAdress;
 $mailTemplateType;
 $customerName;
@@ -20,65 +20,68 @@ $vendorId;
 $vendorName;
 $vendorPassword;
 
+//global declaration
+$sender_name;
+$subject;
 
-  function createBody(){
+function sendMail($inputParameterObject)
+{
+    // Load Composer's autoloader
+    require 'vendor/autoload.php';
+
+    // Instantiation and passing `true` enables exceptions
+    $mail = new PHPMailer(true);
+
+    try {
+        //Server settings
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
+        $mail->isSMTP();                                            // Send using SMTP
+        $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through
+        $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+        $mail->Username   = 'support@boxigo.in';                     // SMTP username
+        $mail->Password   = 'enrolo@123';                               // SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` also accepted
+        $mail->Port       = 587;                                    // TCP port to connect to
+
+        // Content
+        $mail->isHTML(true);                                  // Set email format to HTML
+        $mail->Subject = $subject;
+        $mail->Body    = createBody($inputParameterObject);
+        // Attachments
+        $mail->CharSet = "utf-8";
+
+        //Recipients
+        $mail->setFrom('support@boxigo.in', 'Boxigo');
+        $mail->addAddress($toAdress, $sender_name);
+
+
+
+        $mail->send();
+        echo 'Message has been sent';
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+}
+
+function createBody($inputParameterObject)
+{
 
     // Add Switch Case for Mail Type
-        switch($mailType){
-            case 'welcomeMailVendor': 
-                $message_content = file_get_contents('boxigo_email_templates/welcomeMailVendor.html');
-        }
-        $vendorName;
+    switch ($this->mailTemplateType) {
+        case 'welcomeMailVendor':
+            $message_content = file_get_contents('boxigo_email_templates/welcomeMailVendor.html');
+            //send the parameter and create the content of the mail template
+            $vendor_name = 'edwin';
+            $message_content = str_replace('%vendor%', $vendor_name, $message_content);
+            $sender_name = "vendorName";
+            $subject = "";
+            return $message_content;
+            break;
 
- 
+            //TODO:create same for other template also
+        case '':
+            break;
+        default:
+            break;
     }
-
-$vendor_name = 'edwin';
-$message_content = str_replace('%vendor%',$vendor_name , $message_content);
-
-// Load Composer's autoloader
-require 'vendor/autoload.php';
-
-// Instantiation and passing `true` enables exceptions
-$mail = new PHPMailer(true);
-
-try {
-    //Server settings
-    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
-    $mail->isSMTP();                                            // Send using SMTP
-    $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through
-    $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-    $mail->Username   = 'enroloenrolo@gmail.com';                     // SMTP username
-    $mail->Password   = 'enrolo@123';                               // SMTP password
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` also accepted
-    $mail->Port       = 587;                                    // TCP port to connect to
-
-    //Recipients
-    $mail->setFrom('support@boxigo.com', 'Pinto');
-   // $mail->addAddress('edwinl182@gmail.com', 'Edwin');     // Add a recipient
-    $mail->addAddress('jeevanjeenu007@gmail.com','jeevan');
-    /* $mail->addAddress('ellen@example.com');               // Name is optional
-    $mail->addReplyTo('info@example.com', 'Information');
-    $mail->addCC('cc@example.com');
-    $mail->addBCC('bcc@example.com'); */
-
-    // Attachments
-    $mail->CharSet="utf-8";
-    //$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-    //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
-
-
-    
-    
-    // Content
-    $mail->isHTML(true);                                  // Set email format to HTML
-    $mail->Subject = 'WELCOME TO BOXIGO';
-    $mail->Body    = ($message_content);
-    // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
-    $mail->send();
-    echo 'Message has been sent';
-} catch (Exception $e) {
-    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
-?>
