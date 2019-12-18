@@ -5,11 +5,36 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-$message_content = file_get_contents('boxigo_email_templates/welcomeMailVendor.html');
+// Input Parameter
+$toAdress;
+$mailTemplateType;
+$customerName;
+$vendorName;
+$estimateId;
+$moveDate;
+$moveFrom;
+$moveTo;
+$otp;
+$verficationLink;
+$vendorId;
+$vendorName;
+$vendorPassword;
+
+
+  function createBody(){
+
+    // Add Switch Case for Mail Type
+        switch($mailType){
+            case 'welcomeMailVendor': 
+                $message_content = file_get_contents('boxigo_email_templates/welcomeMailVendor.html');
+        }
+        $vendorName;
+
+ 
+    }
+
 $vendor_name = 'edwin';
 $message_content = str_replace('%vendor%',$vendor_name , $message_content);
-
-
 
 // Load Composer's autoloader
 require 'vendor/autoload.php';
