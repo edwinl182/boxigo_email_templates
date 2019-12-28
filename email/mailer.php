@@ -5,18 +5,23 @@ use PHPMailer\PHPMailer\Exception;
 class Mailer{
     public $toAddress;
     public $mailTemplateType;
-    public $customerName;
+    /* public $customerName;
     public $vendorName;
     public $estimateId;
     public $moveDate;
     public $moveFrom;
     public $moveTo;
     public $otp;
-    public $verficationLink;
+    public $verfication_Link;
+    public $verfication_number;
     public $vendorId;
-    public $vendorPassword;
+    public $vendorPassword; */
     public $sender_name;
     public $subject;
+
+    #------------------------------
+    public $dummy_value;
+    public $orginal_value;
 
     function sendMail(){
 
@@ -60,17 +65,44 @@ class Mailer{
         switch ($this->mailTemplateType) {
             case 'welcomeMailVendor':
                                         $message_content = file_get_contents('../email_templates/welcomeMailVendor.html');
-                                        $message_content = str_replace('%vendor%', $this->vendor_name, $message_content);
+                                        $message_content = str_replace('%Vendor%', $this->vendor_name, $message_content);
                                         $this->subject = "Vendor Welcome Mail";
                                         return $message_content;
                                         break;
 
-                case 'welcomeCustomer':
-                                        $message_content = file_get_contents('../email_templates/welcomeMailVendor.html');
-                                        $message_content = str_replace('%vendor%', $vendor_name, $message_content);
-                                        $this->subject = "Vendor Welcome Mail";
+                case 'customerEmailVerification':
+                                        $message_content = file_get_contents('../email_templates/customerEmailVerification.html');
+                                        $message_content = str_replace($this->dummy_value, $this->orginal_value, $message_content);
+                                        $this->subject = "Thank you for registering with Boxigo";
                                         return $message_content;
                                         break;
+
+                case 'customerOrderConfirmation':
+                                        $message_content = file_get_contents('../email_templates/customerOrderConfirmation.html');
+                                        $message_content = str_replace($this->dummy_value, $this->orginal_value, $message_content);
+                                        $this->subject = "Customer Order Confirmation";
+                                        return $message_content;
+                                        break;
+                case 'followupEmail':
+                                        $message_content = file_get_contents('../email_templates/followupEmail.html');
+                                        $message_content = str_replace($this->dummy_value, $this->orginal_value, $message_content);
+                                        $this->subject = "Welcome to Boxigo";
+                                        return $message_content;
+                                        break;
+                case 'moveBookingConfirmation':
+                                        $message_content = file_get_contents('../email_templates/moveBookingConfirmation.html');
+                                        $message_content = str_replace($this->dummy_value, $this->orginal_value, $message_content);
+                                        $this->subject = "Welcome to Boxigo";
+                                        return $message_content;
+                                        break;
+                
+                case 'moveDateChangeNotification':
+                                            $message_content = file_get_contents('../email_templates/moveDateChangeNotification.html');
+                                            $message_content = str_replace($this->dummy_value, $this->orginal_value, $message_content);
+                                            $this->subject = "move Date Change Notification";
+                                            return $message_content;
+                                            break;
+
             default:
                                         break;
         }
